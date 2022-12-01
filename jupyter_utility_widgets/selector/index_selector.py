@@ -18,7 +18,7 @@ class IndexSelector(HBox):
         self.right_button.on_click(lambda button: self.step(1))
 
     def step(self, amount):
-        if self.value >= -amount and self.value < self.length - amount :
+        if self.loop or (self.value >= -amount and self.value < self.length - amount):
             self.value = self.value + amount
 
     @property
