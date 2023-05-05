@@ -1,6 +1,6 @@
-# jupyter-utility-widgets
+# python-utility
 
-Seeing I have been using a few widgets "patterns" over and over, I have decided to share and package them in a convenient project.
+Seeing I have been using a few "patterns" over and over, I have decided to share and package them in a convenient project.
 
 ## Installation
 
@@ -11,5 +11,7 @@ may require jupyterlab installation.
 ## Widgets
 
 1. Index Selector
-    A simple combination of widgets that help exploring a list of options.
+    
+    A simple combination of widgets that helps in exploring a list of options.
     see `examples/index_selector.ipynb`
+
