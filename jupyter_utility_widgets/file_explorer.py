@@ -29,12 +29,10 @@ class PathInput(HBox):
         self.is_valid.value = os.path.exists(change.new)
         self.input.layout.border = "1px solid %s" % (self.VALID_BORDER if self.is_valid.value else self.INVALID_BORDER)
 
-class DirectoryChooser(HBox):
+class DirectoryChooser(Dropdown):
     directory = Unicode()
     def __init__(self, *args, **kwargs) -> None:
-        self.select = Dropdown()
         self.relative_mode = True
-        super().__init__([self.select], *args, **kwargs)
         self.select.observe(self._update_path, names=["value"])
     
     @observe("directory")
@@ -54,15 +52,13 @@ class DirectoryChooser(HBox):
             path_solver = os.path.realpath
         self.directory = path_solver(os.path.join(self.directory, change.new))
 
-class FileChooser(HBox):
+class FileChooser(SelectMultiple):
     directory = Unicode()
-    def __init__(self, *args, **kwargs) -> None:
-        self.select = SelectMultiple()
-        super().__init__([self.select], *args, **kwargs)
-    
+
     @observe("directory")
     def _new_directory(self, change):
         path = change.new
         
         if os.path.isdir(path):
             self.select.options = list(filter(lambda path: os.path.isfile(os.path.join(self.directory,path)),[".."] +os.listdir(path)))
+    
