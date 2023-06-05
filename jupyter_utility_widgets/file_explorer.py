@@ -1,5 +1,5 @@
 from ipywidgets import Text, HBox, Valid, link, Dropdown, SelectMultiple
-from traitlets import Unicode, observe
+from traitlets import Unicode, observe, Bool
 import os
 
 class PathInput(HBox):
@@ -31,9 +31,7 @@ class PathInput(HBox):
 
 class DirectoryChooser(Dropdown):
     directory = Unicode()
-    def __init__(self, *args, **kwargs) -> None:
-        self.relative_mode = True
-        self.select.observe(self._update_path, names=["value"])
+    relative_mode = Bool(default_value=True)
     
     @observe("directory")
     def _new_directory(self, change):
@@ -41,12 +39,13 @@ class DirectoryChooser(Dropdown):
 
         if os.path.isdir(path):
             self.relative_mode = path[0] != "/"
-            self.select.options = list(filter(lambda path: os.path.isdir(os.path.join(self.directory,path)),[".."] +os.listdir(path)))
-        
+            self.options = list(filter(lambda path: os.path.isdir(os.path.join(self.directory,path)),[".."] +os.listdir(path)))
+    
+    @observe("value")
     def _update_path(self, change):
         if change.new is None:
             return
-        self.select.value = None
+        self.value = None
         path_solver = os.path.relpath
         if not self.relative_mode:
             path_solver = os.path.realpath
@@ -60,5 +59,5 @@ class FileChooser(SelectMultiple):
         path = change.new
         
         if os.path.isdir(path):
-            self.select.options = list(filter(lambda path: os.path.isfile(os.path.join(self.directory,path)),[".."] +os.listdir(path)))
+            self.options = list(filter(lambda path: os.path.isfile(os.path.join(self.directory,path)),[".."] +os.listdir(path)))
     
