@@ -7,6 +7,10 @@ from ipywidgets import Box
 from abc import abstractmethod
 
 class BasePlot(Box):
+    @property
+    def ax(self,):
+        return self.axes[0]
+    
     def __init__(self, nrows=1,ncols=1, **kwargs):
         self.fig: Figure
         self.axes: List[Axes]
