@@ -39,6 +39,7 @@ class SpectrogramExaminer(HBox):
     def update(self, data):
         self.data = data
         self.full_spec.update(data)
+        self.span_ax.patches[0].remove()
         self.span_ax.set_xlim(*self.full_spec.ax.get_xlim())
         self.selector.new_axes(self.span_ax)
         self.zoom_spec.update(None)
