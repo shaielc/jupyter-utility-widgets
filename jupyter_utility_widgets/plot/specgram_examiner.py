@@ -8,9 +8,14 @@ class SpectrogramExaminer(HBox):
     def __init__(self, **kwargs):
         self.full_spec = SpecgramPlot()
         self.zoom_spec = SpecgramPlot()
+
+        # FIX: https://github.com/matplotlib/matplotlib/issues/10009
+        self.span_ax = self.full_spec.fig.add_subplot(1,1,1)
+        self.span_ax.patch.set_visible(False)
+        self.span_ax.axis("off")
         
         self.selector = SpanSelector(
-            ax=self.full_spec.ax,
+            ax=self.span_ax,
             onselect=self.on_select,
             direction="horizontal",
             useblit=True,
@@ -34,5 +39,6 @@ class SpectrogramExaminer(HBox):
     def update(self, data):
         self.data = data
         self.full_spec.update(data)
-        self.selector.new_axes(self.full_spec.ax)
+        self.span_ax.set_xlim(*self.full_spec.ax.get_xlim())
+        self.selector.new_axes(self.span_ax)
         self.zoom_spec.update(None)
