@@ -53,12 +53,11 @@ class SpectrogramExaminer(HBox):
     def update(self, data):
         self.data = data
         self.full_spec.update(data)
-        
-        self.selector.new_axes(self.span_ax)
         self.zoom_spec.update(None)
 
         if not self.keep_selection:
             self.span_ax.patches[0].remove()
+            self.selector.new_axes(self.span_ax)
         elif self.last_span != None:
             self.on_select(*self.last_span)
         
