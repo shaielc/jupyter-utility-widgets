@@ -2,12 +2,21 @@ from jupyter_utility_widgets.plot.figures.specgram import SpecgramPlot
 from matplotlib.widgets import SpanSelector
 from ipywidgets import HBox
 from matplotlib import pyplot as plt
-from functools import wraps
+from functools import wraps, update_wrapper
 
 class SpectrogramExaminer(HBox):
-    def __init__(self, **kwargs):
+    def __init__(self, keep_selection=False, **kwargs):
+        """Widget that displays a signal in a spectrogram with the ability to zoom
+
+        Parameters
+        ----------
+        keep_selection : bool, optional
+            If set to true keeps the previous selection after update, by default False
+        """
         self.full_spec = SpecgramPlot()
         self.zoom_spec = SpecgramPlot()
+        self.keep_selection = keep_selection
+        self.last_span = None
 
         # FIX: https://github.com/matplotlib/matplotlib/issues/10009
         self.span_ax = self.full_spec.fig.add_subplot(1,1,1)
@@ -26,20 +35,31 @@ class SpectrogramExaminer(HBox):
 
         super().__init__(children=[self.full_spec, self.zoom_spec], **kwargs)
         self.data = None
+        
+        self.set_params = update_wrapper(lambda *args, **kwargs: self._set_params, plt.specgram)
+
+    def test(self, *args):
+        print(self, *args)
 
     def on_select(self, tmin, tmax):
+        self.last_span = (tmin, tmax)
         xmin, xmax = int(tmin * self.full_spec.sample_rate), int(tmax * self.full_spec.sample_rate)
         self.zoom_spec.update(self.data[max(0,xmin):min(len(self.data),xmax)])
 
-    @wraps(plt.specgram)
-    def set_params(self, *args, **kwargs):
+    def _set_params(self, *args, **kwargs):
         self.full_spec.set_params(*args, **kwargs)
         self.zoom_spec.set_params(*args, **kwargs)
 
     def update(self, data):
         self.data = data
         self.full_spec.update(data)
-        self.span_ax.patches[0].remove()
-        self.span_ax.set_xlim(*self.full_spec.ax.get_xlim())
+        
         self.selector.new_axes(self.span_ax)
         self.zoom_spec.update(None)
+
+        if not self.keep_selection:
+            self.span_ax.patches[0].remove()
+        elif self.last_span != None:
+            self.on_select(*self.last_span)
+        
+        self.span_ax.set_xlim(*self.full_spec.ax.get_xlim())
