@@ -1,0 +1,9 @@
+name: jupyter-utility-widgets-example
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - matplotlib
+  - ipympl
+  - ipwidgets
+  - jupyter-utility-widgets
