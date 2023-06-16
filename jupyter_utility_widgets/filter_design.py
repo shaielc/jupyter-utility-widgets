@@ -62,7 +62,6 @@ class FilterDesignControls(VBox):
             child.observe(lambda evt: self.calc_filt(),names=["value"])
     
     def calc_filt(self, ):
-        print(self.window_selector.value)
         self.value = firwin(
             self.window_length.value,
             self.cutoff_input.value,
