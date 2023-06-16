@@ -1,6 +1,1 @@
-numpy
-scipy
-matplotlib
-ipympl
-ipywidgets
 jupyter-utility-widgets
