@@ -1,5 +1,5 @@
 from jupyter_utility_widgets.plot.filter import Filter
-from jupyter_utility_widgets.utility.numpy_parameter_converter import NumpyFunctionUIFactory
+from jupyter_utility_widgets.utility.numpy_parameter_converter import NumpyFunctionUIFactory, SKIP_PARAMETER
 from ipywidgets import HBox, VBox, Dropdown, BoundedIntText, BoundedFloatText
 from traitlets import Any, Unicode
 from scipy.signal import windows, firwin
@@ -23,8 +23,8 @@ class WindowSelect(VBox):
     def set_extras(self, window_name):
         func = getattr(windows, window_name)
         parameters, parameters_types = NumpyFunctionUIFactory.get_parameter_types(func)
-        parameters_types.pop('M')
-        parameters_types.pop('sym')
+        parameters_types['M'] = SKIP_PARAMETER
+        parameters_types["sym"] = SKIP_PARAMETER
 
         for child in self.extras.children:
             child.unobserve_all()

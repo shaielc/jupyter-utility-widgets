@@ -40,7 +40,7 @@ class NumpyFunctionUIFactory:
 
         widgets = []
         for parameter in parameters:
-            current_type = parameter_types.get(parameter.name, SKIP_PARAMETER)
+            current_type = parameter_types.get(parameter.name)
             
             if current_type is None:
                 if "optional" not in parameter.type:
