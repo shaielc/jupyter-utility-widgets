@@ -15,6 +15,7 @@ class WindowSelect(VBox):
         super().__init__(children=[self.window_func_selector, self.extras])
 
         self.window_func_selector.observe(lambda evt: self._handle_window_change(evt.new), names=["value"])
+        self._handle_window_change(self.window_func_selector.value)
 
     def _handle_window_change(self, window_name):
         self.set_extras(window_name)
@@ -60,6 +61,8 @@ class FilterDesignControls(VBox):
 
         for child in children:
             child.observe(lambda evt: self.calc_filt(),names=["value"])
+        
+        self.calc_filt()
     
     def calc_filt(self, ):
         self.value = firwin(
@@ -75,4 +78,5 @@ class FilterDesign(HBox):
         children = [self.filter_plot, self.design_controls]
         super().__init__(children, **kwargs)
 
-        self.design_controls.observe(lambda evt: self.filter_plot.update(evt.new))
+        self.design_controls.observe(lambda evt: self.filter_plot.update(evt.new), names=["value"])
+        self.filter_plot.update(self.design_controls.value)
