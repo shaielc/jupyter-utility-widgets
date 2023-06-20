@@ -23,3 +23,4 @@ class SpecgramPlot(BasePlot):
 
         _, freqs,_,_ = self.ax.specgram(data, *self.spec_args, **self.spec_kwargs)
         self.sample_rate = freqs[-1]*2
+        super().update()

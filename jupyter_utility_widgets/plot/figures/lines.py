@@ -15,6 +15,8 @@ class Lines(BasePlot):
 
         if self.autoscale:
              self._autoscale()
+        
+        super().update()
     
     def _autoscale(self,):
         xmin = None
@@ -38,4 +40,5 @@ class Lines(BasePlot):
                 ymax = ydata.max()
         self.ax.set_xlim([xmin, xmax])
         self.ax.set_ylim([ymin, ymax])
+        
                 
