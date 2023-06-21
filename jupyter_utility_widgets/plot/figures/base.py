@@ -29,8 +29,9 @@ class BasePlot(Box):
 
         super().__init__(children, **kwargs)
 
+
     def update(self, data=None):
-        self.fig.canvas.draw()
+        self.fig.canvas.draw_idle()
         self.fig.canvas.flush_events()
     
     @abstractmethod
