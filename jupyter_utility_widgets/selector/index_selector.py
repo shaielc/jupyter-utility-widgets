@@ -1,7 +1,7 @@
-from ipywidgets import HBox, Button, IntText
-from traitlets import Int, TraitError, link, observe, validate
+from ipywidgets import HBox, Button, IntText, ValueWidget
+from traitlets import Int, TraitError, link, validate
 
-class IndexSelector(HBox):
+class IndexSelector(HBox, ValueWidget):
     value = Int()
 
     def __init__(self, length=1,loop=False, **kwargs):

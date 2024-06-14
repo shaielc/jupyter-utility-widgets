@@ -1,4 +1,4 @@
-from ipywidgets import HBox, Text, Label, Valid
+from ipywidgets import HBox, Text, Label, Valid, ValueWidget
 from traitlets import Float
 
 def safe_float_convert(string):
@@ -23,7 +23,7 @@ def string_to_number(string):
     number = safe_rational_convert(string)
     return number
 
-class NumericalInput(HBox):
+class NumericalInput(HBox, ValueWidget):
     value = Float()
     
     def __init__(self, **kwargs):
