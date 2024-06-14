@@ -6,7 +6,7 @@ Seeing I have been using a few widgets "patterns" over and over, I have decided 
 
 `pip install jupyter-utility-widgets`
 
-may require jupyterlab installation.
+requires jupyterlab installation.
 
 ## Widgets
 
@@ -19,4 +19,7 @@ may require jupyterlab installation.
 3. Spectrogram Viewer
     A class for viewing spectrogram of data, with a simultaneous zoomed view.
     see `examples/spectrogram.ipynb`
+4. Numerical Output
+    A widget for inputing numerical values e.g. 1, 0.3333, 4/5
+    seee `examples/numerical_input.ipynb`
 
