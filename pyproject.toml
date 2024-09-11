@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jupyter-utility-widgets"
-version = "0.0.4"
+version = "0.0.5"
 readme = "README.md"
 dependencies = [
     "ipywidgets>=8.0.2",
@@ -14,3 +14,7 @@ dependencies = [
     "matplotlib",
     "ipympl",
 ]
+
+[tool.setuptools.package-data]
+"jupyter_utility_widgets" = ["**"]
+recipe = ["*.js"]
