@@ -1,5 +1,7 @@
+
+
 function update(output, wrapper, model) {
-    output.innerHTML = `<b>${model.get("sender")}:</b> ${model.get("message")}`;
+    output.innerHTML = `<b>${model.get("sender")}:</b> ${model.get("content")}`;
     wrapper.style.cssText = model.get("inline_style");
 }
 
