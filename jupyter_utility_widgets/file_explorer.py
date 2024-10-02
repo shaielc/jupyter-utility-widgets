@@ -43,6 +43,11 @@ class PathInput(HBox):
         if value.startswith("./"):
             return value[2:]
         return value
+    
+    @observe('directory')
+    def _check_new_dir(self, change):
+        if os.path.isdir(change.new):
+            self.value = change.new
 
     @observe('value')
     def _check_value(self, change):
@@ -51,7 +56,6 @@ class PathInput(HBox):
         if os.path.isdir(change.new):
             self.directory = change.new
         elif os.path.isfile(change.new):
-            print("????")
             self.filename = change.new
 
 class DirectoryChooser(Dropdown):
@@ -94,13 +98,16 @@ class FileChooser(Select):
     def load_options(self, path="."):
         if not os.path.isdir(path):
             return
-
-        options = get_entries(self.directory, path)
+        
+        options = get_entries(self.directory, path)        
         if self.extensions is not None:
             options = list(filter(create_filter_ext(self.extensions, self.directory), options))
         if len(self.files_filter):
             options = list(filter(lambda entry: entry.startswith(self.files_filter), options))
         self.options = options
+
+    def clear_filter(self,):
+        self.files_filter = ""
 
     @property
     def path(self,):
@@ -108,7 +115,7 @@ class FileChooser(Select):
     
     @observe("files_filter")
     def _filter_options(self, change):
-        self.load_options()
+        self.load_options(self.directory)
 
 
 class FileExplorer(VBox, ValueWidget):
@@ -143,11 +150,16 @@ class FileExplorer(VBox, ValueWidget):
         self.directory = directory
 
     def on_select(self, evt):
-        self.value = self.file_explorer.path
+        if os.path.isfile(self.file_explorer.path):
+            self.value = self.file_explorer.path
+        elif os.path.isdir(self.file_explorer.path):
+            self.input.directory = self.file_explorer.path
     
     def on_path_filename(self, change):
         if os.path.isfile(change.new):
             self.file_explorer.value = os.path.basename(change.new)
+        elif os.path.isdir(change.new):
+            self.file_explorer.clear_filter()
         else:
             self.file_explorer.files_filter = os.path.basename(change.new)
 
