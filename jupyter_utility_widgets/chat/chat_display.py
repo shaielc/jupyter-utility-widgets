@@ -1,28 +1,20 @@
 from __future__ import annotations
-from typing import Callable, Protocol, _ProtocolMeta, TypeVar
+from jupyter_utility_widgets.chat.audio_message import AudioMessageWidget
 from jupyter_utility_widgets.chat.message import Message
 from jupyter_utility_widgets.chat.message import ContentType, Message
+from jupyter_utility_widgets.chat.message_display import MessageDisplayWidget, MessageDisplayWrapper
 from jupyter_utility_widgets.chat.text_message import TextMessageWidget
-from ipywidgets import Widget, Output
-from traitlets import MetaHasTraits
+from ipywidgets import Output
 from typing import Dict, List
 import uuid
 
-T= TypeVar('T', bound=Widget, covariant=True)
-class MessageDisplayWidget(Protocol[T]):
-    def on_edit(self, func: Callable) -> None:
-        pass
-
-    def update_message(self, message: Message) -> None:
-        pass
-
-def message_display_factory(display: ChatDisplay, message: Message):
+def message_display_factory(message: Message):
     if message.type == ContentType.TEXT:
         return TextMessageWidget(
-            message.content,
-            display.styles.get(message.source, ""),
-            message.source
+            content=message.content
         )
+    if message.type == ContentType.RAW_AUDIO:
+        return AudioMessageWidget(content=message.content) #TODO: apply style
     else:
         raise NotImplementedError("Displaying message of type %s is not supported. yet." % message.type)
 
@@ -38,6 +30,7 @@ class ChatDisplay(Output):
         self.edit_observers.append(func)
 
     def notify_start_edit(self, message):
+        print(self.edit_observers)
         for func in self.edit_observers:
             func(message)
 
@@ -46,7 +39,11 @@ class ChatDisplay(Output):
         message_widget.update_message(message)
 
     def add_message(self, message: Message):
-        message_widget = message_display_factory(self, message)
+        message_widget = MessageDisplayWrapper(
+            message_display_factory(message),
+            inline_style=self.styles.get(message.source),
+            sender=message.source
+        )
         self.history.append(message_widget)
         self.index[message.uid] = message_widget
         message_widget.on_edit(lambda widget: self.notify_start_edit(message))

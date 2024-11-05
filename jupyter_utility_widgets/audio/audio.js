@@ -259,6 +259,8 @@ function playRecording(state) {
   source.connect(audio_context.destination);
 
   source.start();
+  // TODO: add pause
+  // TODO: when playing ends set playing to False
 }
 
 function startRecording(state) {
@@ -319,6 +321,12 @@ export default async () => {
 
   return {
     initialize({ model }) {
+      let audio_context = new AudioContext();
+      state["audio_context"] = audio_context;
+      let sampleRate = model.get("sample_rate");
+      model.set("sample_rate", audio_context.sampleRate);
+      model.save_changes()
+      model.send({"type": "resample", "current": sampleRate, "out": audio_context.sampleRate});
       return () => {
         if (state.audio_context) {
           state.audio_context.close();
@@ -330,9 +338,8 @@ export default async () => {
       if (!(navigator.mediaDevices || navigator.mediaDevices.getUserMedia)) {
         el.innerHTML = "Your browser does not support the MediaDevices API";
       }
-      
       let visualizer = state["visualizer"]
-      if (!visualizer.parentNode)
+      if (!document.body.contains(visualizer))
       {
         el.appendChild(visualizer);
       }
@@ -344,12 +351,10 @@ export default async () => {
       }
       
       requestAudioDevice().then((stream) => {
-        let audio_context = new AudioContext();
-
+        let audio_context = state["audio_context"];
         setupAudioGraph(audio_context, stream, state);
 
         state["stream"] = stream;
-        state["audio_context"] = audio_context;
         state["recording"] = model.get("recording");
         model.on("change:recording", () => {
           model.get("recording")
@@ -362,10 +367,11 @@ export default async () => {
           null
         });
         model.on("change:audio", () => loadAudio(model.get("audio"), state))
+        loadAudio(model.get("audio"), state)
+
         
       });
     return () => {
-      state["audio_context"].close();
     }
     },
   };

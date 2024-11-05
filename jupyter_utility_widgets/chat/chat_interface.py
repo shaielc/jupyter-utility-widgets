@@ -6,10 +6,6 @@ from jupyter_utility_widgets.chat.chat_display import ChatDisplay
 from jupyter_utility_widgets.chat.message import Message, TextMessage
 from jupyter_utility_widgets.chat.content_input import ContentInput
 
-# TODO: implement audio message input UI
-# TODO: make sure AudioMessage and TextMessage use the same "flow"
-# TODO: change edit flow match the new flow
-
 class ChatWidget(ipywidgets.VBox):
     USER_KEY = "USER"
     ASSISTANT_KEY = "ASSISTANT"
@@ -41,6 +37,7 @@ class ChatWidget(ipywidgets.VBox):
 
         self.message_input.on_send(self._apply_user_input)
         self.message_input.on_cancel(self.cancel_user_message)
+        self.output.on_edit(self._edit_message_callback)
         self.observers = []
         self.current_editing_message: Optional[Message] = None  # Track the message being edited
     
@@ -63,6 +60,10 @@ class ChatWidget(ipywidgets.VBox):
     
     def _new_user_message(self, content):
         message = Message(content, self.USER_KEY, self.message_input.input_type)
+        self.add_message(message)
+        return message
+    
+    def add_message(self, message):
         self.output.add_message(message)
         self.chat_history.append(message)
 

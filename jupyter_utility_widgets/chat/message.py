@@ -7,7 +7,7 @@ import numpy as np
 
 class ContentType(Enum):
     TEXT=0
-    AUDIO=1
+    RAW_AUDIO=1
 
 
 @dataclass
@@ -23,9 +23,12 @@ class TextMessage(Message):
     content: str
     type: ContentType = ContentType.TEXT
 
-
+@dataclass
+class RawAudioContent:
+    data: np.ndarray
+    sample_rate: int
 
 @dataclass
-class AudioMessage(Message):
-    content: np.ndarray
-    type: ContentType = ContentType.AUDIO
+class RawAudioMessage(Message):
+    content: RawAudioContent
+    type: ContentType = ContentType.RAW_AUDIO

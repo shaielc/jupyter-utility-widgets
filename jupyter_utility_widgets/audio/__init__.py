@@ -3,6 +3,7 @@ import anywidget
 import pathlib
 import numpy as np
 from ipywidgets import Button
+from scipy.signal import resample_poly
 
 
 def _serialize_audio(value: np.ndarray, widget):
@@ -19,11 +20,20 @@ class Audio(anywidget.AnyWidget):
     playing = traitlets.Bool(False).tag(sync=True)
     audio = traitlets.Instance(np.ndarray, allow_none=False, default_value=np.empty(0, dtype=np.float32))\
         .tag(sync=True, to_json=_serialize_audio, from_json=_deserialize_audio)
-    test = traitlets.Bytes(b"").tag(sync=True)
+    sample_rate = traitlets.Int().tag(sync=True)
     
     def __init__(self, recording=False, **kwargs):
         self.recording = recording
         super().__init__(**kwargs)
+        self.on_msg(self._handle_current_message)
+    
+    def _handle_current_message(self, widget, content, buffers):
+        if content["type"] == "resample":
+            down = content["current"]
+            if down == 0:
+                return
+            up = content["out"]
+            self.audio = resample_poly(self.audio, up, down)
     
     @traitlets.validate("playing")
     def _validate_playing(self, proposal):

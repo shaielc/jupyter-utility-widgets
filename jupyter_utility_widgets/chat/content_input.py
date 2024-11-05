@@ -33,7 +33,7 @@ class ContentInput(ipywidgets.HBox):
     def __init__(self, input_method=ContentType.TEXT, **kwargs):
         self.input_methods: Dict[ContentType, ContentInputProtocol] = {
             ContentType.TEXT: TextContentInput(),
-            ContentType.AUDIO: AudioMessageInput()
+            ContentType.RAW_AUDIO: AudioMessageInput()
         }
         self.send_observers = []
         self.cancel_observers = []
@@ -66,7 +66,7 @@ class ContentInput(ipywidgets.HBox):
     
     def send_notify(self, b):
         for func in self.send_observers:
-            func(self.input_method.message)
+            func(self.input_method.content)
         self.input_method.clear()
     
     def cancel_notify(self, b):
