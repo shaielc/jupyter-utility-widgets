@@ -1,6 +1,8 @@
 # python-utility
 
-Seeing I have been using a few widgets "patterns" over and over, I have decided to share and pack them in a convenient manner.
+This project is an assortment of random composite widgets,
+Seeing I have been using a few widgets "patterns" over and over,
+I have decided to pack and share them in a convenient package.
 
 ## Installation
 
