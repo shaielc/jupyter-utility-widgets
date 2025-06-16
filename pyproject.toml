@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jupyter-utility-widgets"
-version = "0.0.7a"
+version = "0.0.7b"
 readme = "README.md"
 dependencies = [
     "ipywidgets>=8.0.2",
@@ -15,6 +15,11 @@ dependencies = [
     "ipympl",
 ]
 description = "Assortment of reusable common jupyter widget patterns"
+
+[project.urls]
+"Homepage" = "https://github.com/shaielc/jupyter-utility-widgets"
+"Source" = "https://github.com/shaielc/jupyter-utility-widgets"
+"Bug Tracker" = "https://github.com/shaielc/jupyter-utility-widgets/issues"
 
 [tool.setuptools.package-data]
 "jupyter_utility_widgets" = ["**"]
