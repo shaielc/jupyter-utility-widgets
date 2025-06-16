@@ -3,7 +3,7 @@ from matplotlib.widgets import SpanSelector
 from ipywidgets import HBox
 from matplotlib import pyplot as plt
 from functools import wraps
-from traitlets import Tuple, Int
+from traitlets import Tuple, Int, observe
 
 class SpectrogramExaminer(HBox):
     current_span = Tuple(Int(), Int())
@@ -43,6 +43,11 @@ class SpectrogramExaminer(HBox):
         xmin, xmax = int(tmin * self.full_spec.sample_rate), int(tmax * self.full_spec.sample_rate)
         self.current_span = xmin, xmax
         self.zoom_spec.update(self.data[max(0,xmin):min(len(self.data),xmax)])
+    
+    @observe("current_span")
+    def update_zoom(self, evt):
+        xmin, xmax = self.current_span
+        self.selector.extents = (xmin, xmax)
     
     @wraps(plt.specgram)
     def set_params(self, *args, **kwargs):
