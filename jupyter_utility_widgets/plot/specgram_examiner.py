@@ -5,8 +5,10 @@ from matplotlib import pyplot as plt
 from functools import wraps
 from traitlets import Tuple, Int, observe
 
+
 class SpectrogramExaminer(HBox):
     current_span = Tuple(Int(), Int())
+
     def __init__(self, keep_selection=False, **kwargs):
         """Widget that displays a signal in a spectrogram with the ability to zoom
 
@@ -21,10 +23,10 @@ class SpectrogramExaminer(HBox):
         self.last_time_span = None
 
         # FIX: https://github.com/matplotlib/matplotlib/issues/10009
-        self.span_ax = self.full_spec.fig.add_subplot(1,1,1)
+        self.span_ax = self.full_spec.fig.add_subplot(1, 1, 1)
         self.span_ax.patch.set_visible(False)
         self.span_ax.axis("off")
-        
+
         self.selector = SpanSelector(
             ax=self.span_ax,
             onselect=self.on_select,
@@ -40,15 +42,17 @@ class SpectrogramExaminer(HBox):
 
     def on_select(self, tmin, tmax):
         self.last_time_span = (tmin, tmax)
-        xmin, xmax = int(tmin * self.full_spec.sample_rate), int(tmax * self.full_spec.sample_rate)
+        xmin, xmax = int(
+            tmin * self.full_spec.sample_rate), int(tmax * self.full_spec.sample_rate)
         self.current_span = xmin, xmax
-        self.zoom_spec.update(self.data[max(0,xmin):min(len(self.data),xmax)])
-    
+        self.zoom_spec.update(
+            self.data[max(0, xmin):min(len(self.data), xmax)])
+
     @observe("current_span")
     def update_zoom(self, evt):
         xmin, xmax = self.current_span
         self.selector.extents = (xmin, xmax)
-    
+
     @wraps(plt.specgram)
     def set_params(self, *args, **kwargs):
         self.full_spec.set_params(*args, **kwargs)
@@ -64,5 +68,5 @@ class SpectrogramExaminer(HBox):
             self.selector.new_axes(self.span_ax)
         elif self.last_time_span != None:
             self.on_select(*self.last_time_span)
-        
+
         self.span_ax.set_xlim(*self.full_spec.ax.get_xlim())
