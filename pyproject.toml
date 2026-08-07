@@ -16,6 +16,11 @@ dependencies = [
 ]
 description = "Assortment of reusable common jupyter widget patterns"
 
+[project.entry-points."matplotlib.backend"]
+# experimental: makes plt.figure() return an ipywidget
+# see docs/matplotlib-widget-backend.md
+juw = "jupyter_utility_widgets.plot.backend"
+
 [project.urls]
 "Homepage" = "https://github.com/shaielc/jupyter-utility-widgets"
 "Source" = "https://github.com/shaielc/jupyter-utility-widgets"
